@@ -5,7 +5,6 @@ import { useState } from "react";
 import { ProjectCard } from "@/components/projects/project-parts";
 import { Page, PageHeader, Section, TwoToneTitle } from "@/components/shell/page";
 import { EmptyState } from "@/components/ui/feedback";
-import { SearchField } from "@/components/ui/fields";
 import { TaskFilterBar, type FilterVisibility } from "@/components/tasks/task-filters";
 import { TaskTable } from "@/components/tasks/task-table";
 import { requestOpenTask, useApp } from "@/lib/app-context";
@@ -19,12 +18,6 @@ export function SearchScreen() {
   const { data, today } = useApp();
   const { filters, setFilters, clear } = useTaskFilters();
   const q = filters.q ?? "";
-  const [draft, setDraft] = useState(q);
-  const [seen, setSeen] = useState(q);
-  if (q !== seen) {
-    setSeen(q);
-    setDraft(q);
-  }
   const [sort, setSort] = useState<{ key: SortKey; dir: SortDir } | null>(null);
 
   const hasFilters = !!(filters.projectId || filters.priority || filters.assigneeId || filters.due || filters.status || filters.label);
@@ -40,16 +33,7 @@ export function SearchScreen() {
   return (
     <Page>
       <PageHeader title={<TwoToneTitle soft="Search" strong="everything" />} description="Task titles, IDs, descriptions and project names." />
-      <div className="mb-4 flex flex-col gap-3">
-        <SearchField
-          value={draft}
-          onChange={(v) => { setDraft(v); setFilters({ q: v }); }}
-          onSubmit={(v) => setFilters({ q: v })}
-          placeholder="Search tasks and projects"
-          label="Search tasks and projects"
-          className="w-full max-w-xl"
-          autoFocus
-        />
+      <div className="mb-4">
         <TaskFilterBar value={filters} onChange={setFilters} onClear={clear} show={SHOW} />
       </div>
       {!searching ? (

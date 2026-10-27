@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell, List, Plus } from "@phosphor-icons/react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button, IconButton } from "@/components/ui/button";
 import { SearchField } from "@/components/ui/fields";
@@ -11,10 +11,8 @@ export function TopBar() {
   const { data, me } = useApp();
   const ui = useUi();
   const router = useRouter();
-  const pathname = usePathname();
   const [q, setQ] = useState("");
   const unread = data.notifications.filter((n) => n.userId === me.id && !n.read).length;
-  const onSearchPage = pathname === "/search";
 
   return (
     <div className="flex h-14 shrink-0 items-center gap-2 border-b border-line bg-surface px-3 sm:px-5">
@@ -22,23 +20,21 @@ export function TopBar() {
         <List />
       </IconButton>
       <div className="min-w-0 flex-1">
-        {onSearchPage ? null : (
-          <SearchField
-            value={q}
-            onChange={setQ}
-            onSubmit={(v) => {
-              const text = v.trim();
-              router.push(text ? `/search?q=${encodeURIComponent(text)}` : "/search");
-              setQ("");
-            }}
-            placeholder="Search tasks and projects"
-            label="Search tasks and projects"
-            className="max-w-md"
-            inputRef={(el) => {
-              if (el) el.id = "global-search";
-            }}
-          />
-        )}
+        <SearchField
+          value={q}
+          onChange={setQ}
+          onSubmit={(v) => {
+            const text = v.trim();
+            router.push(text ? `/search?q=${encodeURIComponent(text)}` : "/search");
+            setQ("");
+          }}
+          placeholder="Search tasks and projects"
+          label="Search tasks and projects"
+          className="max-w-md"
+          inputRef={(el) => {
+            if (el) el.id = "global-search";
+          }}
+        />
       </div>
       <IconButton
         aria-label={unread ? `Notifications, ${unread} unread` : "Notifications"}

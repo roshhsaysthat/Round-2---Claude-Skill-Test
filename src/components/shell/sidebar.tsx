@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, CheckSquare, FolderSimple, GearSix, House, MagnifyingGlass, Tray } from "@phosphor-icons/react";
+import { CheckSquare, FolderSimple, GearSix, House, Tray } from "@phosphor-icons/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -12,25 +12,21 @@ interface NavItem {
   href: string;
   label: string;
   icon: ReactNode;
-  badge?: number;
 }
 
 /**
- * Primary navigation. Seven destinations, no more.
+ * Primary navigation for the main workspace destinations.
  * "On hold" and "Blocked" deliberately live inside My Tasks, not here.
  */
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
-  const { data, me } = useApp();
-  const unread = data.notifications.filter((n) => n.userId === me.id && !n.read).length;
+  const { me } = useApp();
 
   const items: NavItem[] = [
     { href: "/", label: "Home", icon: <House size={18} /> },
     { href: "/my-tasks", label: "My Tasks", icon: <CheckSquare size={18} /> },
     { href: "/projects", label: "Projects", icon: <FolderSimple size={18} /> },
     { href: "/backlog", label: "Backlog", icon: <Tray size={18} /> },
-    { href: "/search", label: "Search", icon: <MagnifyingGlass size={18} /> },
-    { href: "/notifications", label: "Notifications", icon: <Bell size={18} />, badge: unread },
     { href: "/settings", label: "Settings", icon: <GearSix size={18} /> },
   ];
 
@@ -61,17 +57,6 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                 >
                   {item.icon}
                   <span className="flex-1">{item.label}</span>
-                  {item.badge ? (
-                    <span
-                      className={cn(
-                        "min-w-5 rounded-pill px-1.5 text-center text-xs tabular-nums",
-                        active ? "bg-surface text-ink" : "bg-signal text-surface",
-                      )}
-                    >
-                      <span className="sr-only">{item.badge} unread </span>
-                      <span aria-hidden>{item.badge}</span>
-                    </span>
-                  ) : null}
                 </Link>
               </li>
             );
